@@ -9,32 +9,29 @@ module.exports = function toReadable (number) {
         2: 'twenty', 3: 'thirty', 4: 'forty', 5: 'fifty',
         6: 'sixty', 7: 'seventy', 8: 'eighty', 9: 'ninety'
     };
-
-    //если значение меньше 100
+    
     const convert = (number) => {
         if (number < 20) return digits[number]; //для чисел до 20 значения уже установлены
+        if (number < 100) {
+            const ten = Math.floor(number / 10); //находим десятки в числе
+            const unit = number % 10; //находим единицы в числе, используя оператор остатка от деления
 
-        const ten = Math.floor(number / 10); //находим десятки в числе
-        const unit = number % 10; //находим единицы в числе, используя оператор остатка от деления
-        
-        if (unit !== 0) { //если единицы не равны нулю
-            return `${tens[ten]} ${digits[unit]}`; //возвращаем десятки + единицы
-        } else {
-            return `${tens[ten]}`; //иначе возвращаем только десятки
+            if (unit !== 0) { //если единицы не равны нулю
+                return `${tens[ten]} ${digits[unit]}`; //возвращаем десятки + единицы
+            } else {
+                return `${tens[ten]}`; //иначе возвращаем только десятки
+            }
+        }
+        if (number < 1000) {
+            const hundred = Math.floor(number / 100); //находим тысячи в числе
+            const remainder = number % 100; //находим остаток от деления тысяч
+            if (remainder !== 0) {
+                return `${digits[hundred]} hundred ${convert(remainder)}`; //возвращаем тысячи + остаток
+            } else {
+                return `${digits[hundred]} hundred`; //иначе возвращаем только тысячи
+            }
         }
     }
-
-    //если значение больше 100
-    if (number < 100) {
-        return convert(number);
-    } else {
-        const hundred = Math.floor(number / 100);
-        const remainder = number % 100;
-
-        if (remainder !== 0) {
-            return `${digits[hundred]} hundred ${convert(remainder)}`; 
-        } else {
-            return `${digits[hundred]}`;
-        }
-    }
+//условие для корректной обработки чисел от 1 до 9 для сотен (100,200,..). рекурсия.
+    return convert(number);
 }
